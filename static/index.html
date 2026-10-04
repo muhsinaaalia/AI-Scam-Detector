@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCAMSHIELD | AI Scam & Phishing Risk Analyzer</title>
+  <meta name="description" content="AI-Powered Scam & Phishing Risk Analyzer. Instantly evaluate suspicious SMS, WhatsApp, emails, job offers, and payment requests with forensic explainability.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              dark: '#070B14',
+              slate: '#0F172A',
+              card: '#111C35',
+              border: '#1E293B',
+              accent: '#38BDF8',
+              safe: '#10B981',
+              warn: '#F59E0B',
+              danger: '#EF4444',
+              critical: '#F43F5E'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="cyber-grid text-slate-100 flex flex-col min-h-screen">
+  
+  <!-- Background Glow Accents -->
+  <div class="glow-blob-cyan -top-24 -left-24"></div>
+  <div class="glow-blob-rose top-96 -right-24"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="relative z-20 border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 ring-1 ring-white/20">
+          <i data-lucide="shield-alert" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-300 to-rose-400">SCAMSHIELD</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-sky-500/10 text-sky-400 border border-sky-500/30">MVP 1.0</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium tracking-wide">Think before you click.</p>
+        </div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="flex items-center space-x-3">
+        
+        <!-- Active Engine Pill -->
+        <div id="nav-engine-pill" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 text-xs text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="w-2 h-2 rounded-full bg-emerald-400 -ml-4"></span>
+          <span id="nav-engine-text">Defense Engine Active</span>
+        </div>
+
+        <!-- History Drawer Button -->
+        <button id="btn-open-history" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-medium text-slate-200 transition">
+          <i data-lucide="history" class="w-4 h-4 text-sky-400"></i>
+          <span>Recent Scans</span>
+          <span id="history-counter-badge" class="px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 text-[10px] font-bold">0</span>
+        </button>
+
+        <!-- Settings Button -->
+        <button id="btn-open-settings" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 hover:text-white transition" title="API Key Settings">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Emergency Helpline Button -->
+        <a href="#helpline-section" class="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800/50 text-xs font-semibold text-rose-300 transition">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5 text-rose-400"></i>
+          <span>1930 Helpline</span>
+        </a>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    
+    <!-- Hero / Headline Section -->
+    <section class="text-center space-y-4 pt-2 pb-4">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-950/60 border border-sky-800/60 text-xs font-medium text-sky-300 mb-2">
+        <i data-lucide="radar" class="w-4 h-4 text-sky-400 animate-spin" style="animation-duration: 4s;"></i>
+        <span>AI-Powered Scam & Phishing Risk Analyzer</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white max-w-3xl mx-auto leading-tight">
+        Verify Suspicious Messages <br class="hidden sm:inline">
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-200 to-rose-400">Before You Click or Pay.</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        Paste any SMS, WhatsApp alert, fake job offer, or UPI payment link. ScamShield exposes social engineering, inverted payment traps, and deceptive domains with forensic explainability.
+      </p>
+
+      <!-- Trust Badges -->
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-2 text-xs text-slate-400">
+        <span class="flex items-center space-x-1.5">
+          <i data-lucide="lock" class="w-4 h-4 text-emerald-400"></i>
+          <span>Zero Data Retention</span>
+        </span>
+        <span class="text-slate-700">•</span>
+        <span class="flex items-center space-x-1.5">
+          <i data-lucide="zap" class="w-4 h-4 text-sky-400"></i>
+          <span>UPI Inversion Trap Detection</span>
+        </span>
+        <span class="text-slate-700">•</span>
+        <span class="flex items-center space-x-1.5">
+          <i data-lucide="eye" class="w-4 h-4 text-indigo-400"></i>
+          <span>Deep "Why Flagged" Breakdown</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- Demo Mode / Sample Cases Bar -->
+    <section class="space-y-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Judge / Demo Cases (Click to load):</span>
+        </div>
+        <span class="text-[11px] text-slate-500 hidden sm:inline">Instant evaluation across diverse attack vectors</span>
+      </div>
+
+      <!-- Sample Buttons Grid -->
+      <div id="sample-buttons-container" class="flex flex-wrap gap-2">
+        <!-- Dynamically rendered sample buttons -->
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="bank_kyc">
+          <span>🏦 Bank KYC Scam</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="upi_refund">
+          <span>⚡ UPI ₹25K Trap</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="telegram_job">
+          <span>💼 Telegram Job Scam</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="fedex_arrest">
+          <span>🚨 Police / FedEx Threat</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="prize_lottery">
+          <span>🏆 KBC Lottery Scam</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-xs font-medium text-slate-300 transition flex items-center space-x-1.5" data-sample="insta_phishing">
+          <span>🔑 Phishing Alert</span>
+        </button>
+        <button class="sample-btn px-3 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-700/50 text-xs font-semibold text-emerald-300 transition flex items-center space-x-1.5" data-sample="legit_bank_otp">
+          <span>🛡️ Legitimate OTP (Safe)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Message Input Console -->
+    <section class="glass-panel p-5 sm:p-7 relative overflow-hidden">
+      
+      <!-- Console Header: Channel Selector & Sender Info -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
+        
+        <!-- Communication Channel Selector -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
+          <span class="text-xs font-medium text-slate-400 whitespace-nowrap">Channel:</span>
+          <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800 text-xs" id="channel-selector">
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-white bg-slate-800" data-channel="Unknown">Auto</button>
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white" data-channel="SMS">SMS</button>
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white" data-channel="WhatsApp">WhatsApp</button>
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white" data-channel="Email">Email</button>
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white" data-channel="Telegram">Telegram</button>
+            <button type="button" class="channel-btn px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white" data-channel="Social">Social</button>
+          </div>
+        </div>
+
+        <!-- Optional Sender ID Input -->
+        <div class="flex items-center space-x-2">
+          <label for="input-sender" class="text-xs font-medium text-slate-400 whitespace-nowrap">Sender (optional):</label>
+          <input type="text" id="input-sender" placeholder="e.g. HDFC-NOTICE or +91..." class="bg-slate-950/80 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 w-44">
+        </div>
+
+      </div>
+
+      <!-- Main Input Textarea Area -->
+      <div class="pt-4 relative">
+        <textarea 
+          id="input-text" 
+          rows="5" 
+          class="w-full bg-slate-950/70 border border-slate-800/90 rounded-xl p-4 text-sm sm:text-base text-slate-100 placeholder-slate-500 font-sans focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition resize-y"
+          placeholder="Paste suspicious text here... (e.g. 'URGENT: Your bank account will be blocked within 24h, click http://... to verify KYC' or 'You won ₹25,000, scan QR to receive money')..."
+        ></textarea>
+
+        <!-- Quick Floating Action Buttons inside Textarea -->
+        <div class="absolute right-4 bottom-7 flex items-center space-x-2">
+          <button id="btn-paste" type="button" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-xs text-slate-300 flex items-center space-x-1 border border-slate-700/80 transition" title="Paste from clipboard">
+            <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Paste</span>
+          </button>
+          <button id="btn-clear" type="button" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-xs text-slate-300 flex items-center space-x-1 border border-slate-700/80 transition" title="Clear text">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Footer: Chars counter, Privacy notice, and Analyze CTA -->
+      <div class="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        
+        <!-- Left: Word/Char count & Privacy -->
+        <div class="space-y-1">
+          <div class="flex items-center space-x-3 text-xs text-slate-400">
+            <span id="char-counter">0 characters</span>
+            <span>•</span>
+            <span id="word-counter">0 words</span>
+          </div>
+          <p class="text-[11px] text-slate-500 flex items-center space-x-1">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Privacy Guarantee: In-memory analysis. Zero message logging.</span>
+          </p>
+        </div>
+
+        <!-- Right: Primary Analyze CTA Button -->
+        <div class="flex items-center space-x-3">
+          <button 
+            id="btn-analyze" 
+            type="button" 
+            class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-600 to-sky-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-sm sm:text-base shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transform active:scale-95 transition flex items-center justify-center space-x-2"
+          >
+            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            <span>Analyze Message</span>
+            <span class="hidden md:inline px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono font-medium">Ctrl+Enter</span>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Scanning Radar State (Hidden until analysis runs) -->
+    <section id="scanning-indicator" class="hidden glass-panel p-10 text-center space-y-6">
+      <div class="radar-scanner">
+        <div class="radar-circle"></div>
+        <div class="radar-circle"></div>
+        <div class="radar-circle"></div>
+        <div class="radar-sweep"></div>
+      </div>
+      <div class="space-y-2">
+        <h3 class="text-lg font-bold text-sky-400 tracking-wide">SCAMSHIELD NEURAL SCAN IN PROGRESS</h3>
+        <p id="scanning-step-text" class="text-xs sm:text-sm text-slate-400 font-mono">Evaluating psychological coercion triggers...</p>
+      </div>
+    </section>
+
+    <!-- Results Dashboard Section (Hidden by default) -->
+    <section id="results-section" class="hidden space-y-8 transition-opacity duration-500">
+      
+      <!-- Top Banner: Overall Score & Risk Category Card -->
+      <div class="glass-panel p-6 sm:p-8 border-slate-700/80 relative overflow-hidden">
+        
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          
+          <!-- Left: Score Gauge & Risk Indicator -->
+          <div class="flex flex-col sm:flex-row items-center sm:items-start lg:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            
+            <!-- SVG Radial Gauge -->
+            <div class="relative w-36 h-36 flex-shrink-0 flex items-center justify-center">
+              <svg class="gauge-svg w-36 h-36" viewBox="0 0 120 120">
+                <circle class="gauge-meter-bg" cx="60" cy="60" r="50" stroke-width="10"></circle>
+                <circle id="gauge-progress" class="gauge-meter-progress" cx="60" cy="60" r="50" stroke-width="10" stroke-dasharray="314.159" stroke-dashoffset="314.159" stroke="#EF4444"></circle>
+              </svg>
+              
+              <!-- Center Gauge Value -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span id="result-score-number" class="text-3xl font-extrabold tracking-tight text-white font-mono">0</span>
+                <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">/ 100 Risk</span>
+              </div>
+            </div>
+
+            <!-- Risk Details & Categorization -->
+            <div class="text-center sm:text-left space-y-2">
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <!-- Risk Level Pill -->
+                <span id="result-risk-level-badge" class="px-3.5 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase risk-badge-high">
+                  HIGH RISK SCAM
+                </span>
+                
+                <!-- Category Tag -->
+                <span id="result-category-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700">
+                  UPI / Payment Fraud
+                </span>
+              </div>
+
+              <!-- Confidence & Engine Info -->
+              <div class="flex items-center justify-center sm:justify-start space-x-3 text-xs text-slate-400">
+                <span class="flex items-center space-x-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-sky-400"></i>
+                  <span id="result-confidence-text">95% Confidence</span>
+                </span>
+                <span>•</span>
+                <span class="flex items-center space-x-1">
+                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span id="result-engine-text">Gemini 2.5 Flash</span>
+                </span>
+              </div>
+
+              <!-- Forensic Summary -->
+              <p id="result-summary-text" class="text-sm text-slate-300 leading-relaxed max-w-xl pt-1">
+                Dangerous payment fraud trap. The message manipulates urgent fear or cashback reward to coerce user action.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Right: Quick Export & Action Buttons -->
+          <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 flex-shrink-0">
+            <button id="btn-copy-report" class="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-semibold text-slate-200 flex items-center justify-center space-x-2 transition">
+              <i data-lucide="file-text" class="w-4 h-4 text-sky-400"></i>
+              <span>Copy Incident Report</span>
+            </button>
+            <button id="btn-retest-cta" class="px-4 py-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-medium text-slate-300 flex items-center justify-center space-x-2 transition" onclick="window.scrollTo({top: 250, behavior: 'smooth'})">
+              <i data-lucide="rotate-ccw" class="w-4 h-4 text-slate-400"></i>
+              <span>Scan Another Message</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Interactive Explainability Section: Message Heatmap -->
+      <div class="glass-panel p-6 sm:p-7 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+              <i data-lucide="microscope" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Interactive Message Inspector</h2>
+              <p class="text-xs text-slate-400">Hover or click on highlighted triggers to view forensic threat vectors</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-slate-500 hidden sm:inline">Threat Heatmap</span>
+        </div>
+
+        <!-- Rendered Highlight Container -->
+        <div id="message-heatmap-container" class="p-4 rounded-xl bg-slate-950/90 border border-slate-800/90 text-sm sm:text-base leading-relaxed text-slate-200 font-sans break-words whitespace-pre-wrap">
+          <!-- Dynamically highlighted spans injected here -->
+        </div>
+      </div>
+
+      <!-- Core Explainability Breakdown ("Why Was This Flagged?") -->
+      <div class="glass-panel p-6 sm:p-7 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1.5 rounded-md bg-rose-500/10 border border-rose-500/30 text-rose-400">
+              <i data-lucide="help-circle" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Why Was This Flagged? (Explainability)</h2>
+              <p class="text-xs text-slate-400">Transparent breakdown of social engineering tactics and technical deception</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-slate-500 hidden sm:inline">Zero Black-Box AI</span>
+        </div>
+
+        <!-- Why Flagged Cards Grid -->
+        <div id="why-flagged-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamically populated why flagged factor cards -->
+        </div>
+      </div>
+
+      <!-- Red Flags & Extracted Technical Entities (Two Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left Column: Detected Red Flags -->
+        <div class="glass-panel p-6 space-y-4">
+          <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+            <div class="p-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400">
+              <i data-lucide="flag" class="w-4 h-4"></i>
+            </div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Specific Red Flags Detected</h2>
+          </div>
+
+          <div id="red-flags-container" class="space-y-3">
+            <!-- Dynamically populated red flag items -->
+          </div>
+        </div>
+
+        <!-- Right Column: Extracted Entities & Technical Indicators -->
+        <div class="glass-panel p-6 space-y-4">
+          <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+            <div class="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/30 text-sky-400">
+              <i data-lucide="link-2" class="w-4 h-4"></i>
+            </div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Extracted Threat Indicators</h2>
+          </div>
+
+          <div id="extracted-entities-container" class="space-y-4 text-xs">
+            <!-- Dynamically populated extracted URLs, Phones, Brands -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Actionable Defense Checklist ("What You Should Do Next") -->
+      <div class="glass-panel p-6 sm:p-7 space-y-5 border-emerald-900/30">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">Recommended Next Actions</h2>
+              <p class="text-xs text-slate-400">Follow these concrete safety steps immediately</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-emerald-400/80">Interactive Defense Checklist</span>
+        </div>
+
+        <!-- Interactive Checklist Items -->
+        <div id="recommended-actions-container" class="space-y-2.5">
+          <!-- Dynamically populated checklist items -->
+        </div>
+
+        <!-- Action Helper Bar -->
+        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <span class="text-slate-400">If you already sent money or entered PIN:</span>
+          <div class="flex items-center space-x-2">
+            <a href="tel:1930" class="px-3 py-1.5 rounded-md bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-semibold transition flex items-center space-x-1.5">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+              <span>Dial 1930 Cyber Helpline</span>
+            </a>
+            <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-medium transition flex items-center space-x-1.5">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>cybercrime.gov.in</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Emergency Helpline Information Section -->
+    <section id="helpline-section" class="glass-panel p-6 border-slate-800">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start space-x-3.5">
+          <div class="p-2 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 mt-1 sm:mt-0">
+            <i data-lucide="life-buoy" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Victim of Financial Cyber Fraud?</h3>
+            <p class="text-xs text-slate-400 leading-relaxed max-w-2xl mt-0.5">
+              The first 2–3 hours ("Golden Hours") are critical. Report immediately to freeze compromised bank accounts before funds are laundered.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 w-full sm:w-auto">
+          <a href="tel:1930" class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition flex items-center justify-center space-x-2 shadow-lg shadow-rose-600/30">
+            <i data-lucide="phone-call" class="w-4 h-4"></i>
+            <span>Call 1930 (India)</span>
+          </a>
+          <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold transition flex items-center justify-center space-x-1.5">
+            <span>File Complaint</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Slide-Over Recent Analyses Drawer -->
+  <div id="history-drawer-backdrop" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden transition-opacity"></div>
+  <aside id="history-drawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-slate-950 border-l border-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    
+    <!-- Drawer Header -->
+    <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="history" class="w-5 h-5 text-sky-400"></i>
+        <h2 class="text-base font-bold text-white">Recent Analyses</h2>
+      </div>
+      <button id="btn-close-history" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Content List -->
+    <div id="history-list-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+      <!-- Dynamically filled with past scans -->
+      <div class="text-center py-12 text-slate-500 text-xs">
+        <i data-lucide="clock" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+        <span>No recent scans yet. Analyze a message to populate history.</span>
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-4 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between">
+      <span class="text-[11px] text-slate-500">Stored locally in your browser</span>
+      <button id="btn-clear-history" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-rose-950/60 hover:text-rose-400 border border-slate-700 hover:border-rose-800/60 text-xs text-slate-300 transition">
+        Clear History
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Settings / API Key Modal -->
+  <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel w-full max-w-lg p-6 space-y-5 border-slate-700 bg-slate-950">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="settings" class="w-5 h-5 text-sky-400"></i>
+          <h3 class="text-base font-bold text-white">AI Engine & API Settings</h3>
+        </div>
+        <button id="btn-close-settings" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+        <p>
+          ScamShield features a dual-engine architecture:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-slate-400 pl-1">
+          <li><strong class="text-slate-200">Google Gemini 2.5 Flash:</strong> Deep reasoning, nuanced social engineering detection, contextual entity extraction.</li>
+          <li><strong class="text-slate-200">ScamShield Heuristic Engine:</strong> Built-in zero-latency regex & forensic intelligence that runs even offline without an API key!</li>
+        </ul>
+
+        <div class="space-y-1.5 pt-2">
+          <label for="input-api-key" class="font-semibold text-slate-200">Gemini API Key (Optional):</label>
+          <input 
+            type="password" 
+            id="input-api-key" 
+            placeholder="AIzaSy..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+          >
+          <p class="text-[11px] text-slate-500">Stored exclusively in your browser session for direct server-side relay. Never shared.</p>
+        </div>
+
+        <div class="p-3 rounded-lg bg-sky-950/40 border border-sky-800/40 text-sky-300 text-[11px] space-y-1">
+          <p class="font-semibold">💡 No key? No problem!</p>
+          <p class="text-slate-400">The built-in Heuristic Defense Engine is fully operational and provides comprehensive threat scoring, explainability, and advice for all demo cases.</p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end space-x-2">
+        <button id="btn-save-settings" class="px-5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition">
+          Save Settings
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl text-xs font-semibold text-white flex items-center space-x-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <i id="toast-icon" data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-message">Report copied to clipboard!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-slate-800/80 bg-slate-950/80 mt-16 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-slate-400">SCAMSHIELD</span>
+        <span>•</span>
+        <span>Think before you click.</span>
+      </div>
+      <p class="text-[11px] text-slate-600 max-w-md">
+        Educational & forensic security analyzer. Always verify with official authorities in financial emergencies.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript Application Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
